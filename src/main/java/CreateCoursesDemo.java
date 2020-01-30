@@ -5,7 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-public class CreateConstructorDemo {
+public class CreateCoursesDemo {
     public static void main(String[] args) {
         SessionFactory factory = new Configuration()
                 .configure("hibernate.cfg.xml")
@@ -14,25 +14,22 @@ public class CreateConstructorDemo {
                 .addAnnotatedClass(Course.class)
                 .buildSessionFactory();
 
-        //use try with resources
         try (factory; Session session = factory.getCurrentSession()) {
-            //create the objects
-            Instructor tempInstructor =
-                    new Instructor("John", "Wick", "boogerman@gmail.com");
-
-            InstructorDetail tempInstructorDetail =
-                    new InstructorDetail("http://youtube.come", "boxing");
-            //associate the object
-            tempInstructor.setInstructorDetail(tempInstructorDetail);
-
             session.beginTransaction();
 
-            System.out.println("Saving tempInstuctor: " + tempInstructor);
-            session.save(tempInstructor);
+            int theId = 1;
+            Instructor tempInstructor = session.get(Instructor.class, theId);
 
-            session.getTransaction().commit();
+            Course tempCourse1 = new Course("Boxing on open air.");
+            Course tempCourse2 = new Course("Kick-boxing.");
 
-            System.out.println("Done!");
+            tempInstructor.add(tempCourse1);
+            tempInstructor.add(tempCourse2);
+
+            session.save(tempCourse1);
+            session.save(tempCourse2);
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
